@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stoichiometry Calculator — ChemCalc</title>
+<meta name="description" content="Stoichiometry calculator. Convert between moles, grams, and molecules. Enter molar mass and one value to find the rest.">
+<meta property="og:title" content="Stoichiometry Calculator — ChemCalc">
+<meta property="og:description" content="Stoichiometry calculator. Convert between moles, grams, and molecules. Enter molar mass and one value to find the rest.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://thehivemakes.github.io/hive-chem-calc/stoichiometry.html">
+<link rel="stylesheet" href="style.css">
+<script src="js/calc-core.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Stoichiometry Calculator",
+  "url": "https://thehivemakes.github.io/hive-chem-calc/stoichiometry.html",
+  "description": "Stoichiometry calculator. Convert between moles, grams, and molecules. Enter molar mass and one value to find the rest.",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Any"
+}
+</script>
+</head>
+<body>
+<header><div class="header-inner"><div class="logo">Chem<span>Calc</span></div><div class="tagline">Free chemistry calculators</div></div></header>
+<nav><div class="nav-inner"><a href="index.html">ChemCalc</a><span class="sep">/</span><span>Stoichiometry Calculator</span></div></nav>
+<main>
+  <div class="ad-leaderboard" id="ad-top">Ad</div>
+  <div class="card">
+    <h1>Stoichiometry Calculator</h1>
+    <p class="subtitle">Enter molar mass and any one of moles, grams, or molecules to find the others.</p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="st_mm">Molar mass (g/mol)</label>
+        <input type="number" id="st_mm" step="0.01" placeholder="18.015">
+      </div>
+      <div class="field">
+        <label for="st_moles">Moles</label>
+        <input type="number" id="st_moles" step="0.001" placeholder="">
+      </div>
+      <div class="field">
+        <label for="st_grams">Grams</label>
+        <input type="number" id="st_grams" step="0.01" placeholder="">
+      </div>
+      <div class="field">
+        <label for="st_molecules">Molecules</label>
+        <input type="number" id="st_molecules" step="any" placeholder="">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+    <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+    <div class="result" id="result">
+      <div class="result-row">
+        <span class="result-label">Moles</span>
+        <span class="result-value" id="st-out-mol">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Grams</span>
+        <span class="result-value" id="st-out-g">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Molecules</span>
+        <span class="result-value" id="st-out-molec">—</span>
+      </div>
+      <div class="result-note">Moles = grams / molar mass. Molecules = moles × 6.022 × 10²³ (Avogadro’s number).</div>
+    </div>
+  </div>
+
+  <div class="ad-rectangle" id="ad-mid">Ad</div>
+  <div class="seo-section">
+    <h2>Mole-Gram-Molecule Conversions</h2>
+    <p>Stoichiometry is the calculation of quantities in chemical reactions. The mole is the bridge between the atomic scale and the lab scale.</p>
+    <p>One mole of any substance contains 6.022 × 10²³ particles (Avogadro’s number) and has a mass in grams equal to its molar mass.</p>
+  </div>
+</main>
+<footer>Free chemistry calculators. No signup, no tracking. Always double-check lab calculations before preparing solutions.<br>Built by <a href="https://thehivemakes.github.io/" style="color:var(--accent)">The Hive</a></footer>
+<script>
+
+function calculate() {
+  const mm = CalcCore.get('st_mm');
+  const mol = CalcCore.get('st_moles');
+  const g = CalcCore.get('st_grams');
+  const molec = CalcCore.get('st_molecules');
+  if (isNaN(mm)||mm<=0) return;
+  const NA = 6.02214076e23;
+
+  let moles, grams, molecules;
+  if (!isNaN(mol)) { moles=mol; grams=mol*mm; molecules=mol*NA; }
+  else if (!isNaN(g)) { moles=g/mm; grams=g; molecules=(g/mm)*NA; }
+  else if (!isNaN(molec)) { moles=molec/NA; grams=(molec/NA)*mm; molecules=molec; }
+  else return;
+
+  CalcCore.set('st-out-mol', CalcCore.fmt(moles, 4) + ' mol');
+  CalcCore.set('st-out-g', CalcCore.fmt(grams, 4) + ' g');
+  CalcCore.set('st-out-molec', molecules.toExponential(3) + ' molecules');
+  CalcCore.showResult();
+  CalcCore.saveParams(['st_mm','st_moles','st_grams','st_molecules']);
+}
+
+function clearAll() {
+  ["st_mm", "st_moles", "st_grams", "st_molecules"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = el.defaultValue || '';
+  });
+  document.getElementById('result').classList.remove('visible');
+  history.replaceState(null, '', window.location.pathname);
+}
+
+document.addEventListener('DOMContentLoaded', () => { if (window.location.search) calculate(); });
+</script>
+</body>
+</html>

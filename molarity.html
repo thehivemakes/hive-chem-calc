@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Molarity Calculator — ChemCalc</title>
+<meta name="description" content="Molarity calculator. Enter mass, molar mass, and volume to find concentration. Or solve for any missing variable. Free chemistry tool.">
+<meta property="og:title" content="Molarity Calculator — ChemCalc">
+<meta property="og:description" content="Molarity calculator. Enter mass, molar mass, and volume to find concentration. Or solve for any missing variable. Free chemistry tool.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://thehivemakes.github.io/hive-chem-calc/molarity.html">
+<link rel="stylesheet" href="style.css">
+<script src="js/calc-core.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Molarity Calculator",
+  "url": "https://thehivemakes.github.io/hive-chem-calc/molarity.html",
+  "description": "Molarity calculator. Enter mass, molar mass, and volume to find concentration. Or solve for any missing variable. Free chemistry tool.",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Any"
+}
+</script>
+</head>
+<body>
+<header><div class="header-inner"><div class="logo">Chem<span>Calc</span></div><div class="tagline">Free chemistry calculators</div></div></header>
+<nav><div class="nav-inner"><a href="index.html">ChemCalc</a><span class="sep">/</span><span>Molarity Calculator</span></div></nav>
+<main>
+  <div class="ad-leaderboard" id="ad-top">Ad</div>
+  <div class="card">
+    <h1>Molarity Calculator</h1>
+    <p class="subtitle">Enter any three of mass, molar mass, volume, and molarity to find the fourth.</p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="mass">Mass of solute (grams)</label>
+        <input type="number" id="mass" step="0.01" placeholder="58.44">
+      </div>
+      <div class="field">
+        <label for="molar_mass">Molar mass (g/mol)</label>
+        <input type="number" id="molar_mass" step="0.01" placeholder="58.44">
+      </div>
+      <div class="field">
+        <label for="volume">Volume of solution (liters)</label>
+        <input type="number" id="volume" step="0.001" placeholder="1.0">
+      </div>
+      <div class="field">
+        <label for="molarity">Molarity (mol/L)</label>
+        <input type="number" id="molarity" step="0.001" placeholder="">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+    <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+    <div class="result" id="result">
+      <div class="result-row">
+        <span class="result-label">Molarity (M)</span>
+        <span class="result-value" id="out-M">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Moles of solute</span>
+        <span class="result-value" id="out-moles">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Mass of solute (g)</span>
+        <span class="result-value" id="out-mass">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Volume (L)</span>
+        <span class="result-value" id="out-vol">—</span>
+      </div>
+      <div class="result-note">M = moles / liters = (mass / molar mass) / volume. Enter any 3 knowns to solve for the 4th.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h2 style="font-size:16px;font-weight:700;margin-bottom:12px;">Common Molar Masses</h2>
+    <table class="ref-table" id="ref-table">
+      <thead><tr><th>Compound</th><th>Formula</th><th>Molar Mass (g/mol)</th></tr></thead>
+      <tbody>
+        <tr><td>Sodium chloride</td><td>NaCl</td><td>58.44</td></tr>
+        <tr><td>Sodium hydroxide</td><td>NaOH</td><td>40.00</td></tr>
+        <tr><td>Hydrochloric acid</td><td>HCl</td><td>36.46</td></tr>
+        <tr><td>Sulfuric acid</td><td>H₂SO₄</td><td>98.08</td></tr>
+        <tr><td>Glucose</td><td>C₆H₁₂O₆</td><td>180.16</td></tr>
+        <tr><td>Calcium chloride</td><td>CaCl₂</td><td>110.98</td></tr>
+        <tr><td>Potassium permanganate</td><td>KMnO₄</td><td>158.03</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ad-rectangle" id="ad-mid">Ad</div>
+  <div class="seo-section">
+    <h2>How to Calculate Molarity</h2>
+    <p>Molarity (M) is the number of moles of solute per liter of solution. It is the most common way to express concentration in chemistry.</p>
+    <p>To prepare a solution of known molarity: (1) calculate the mass needed using mass = M × V × molar mass, (2) weigh the solute, (3) dissolve in less than the final volume of solvent, (4) dilute to the final volume in a volumetric flask.</p>
+  </div>
+</main>
+<footer>Free chemistry calculators. No signup, no tracking. Always double-check lab calculations before preparing solutions.<br>Built by <a href="https://thehivemakes.github.io/" style="color:var(--accent)">The Hive</a></footer>
+<script>
+
+function calculate() {
+  const m = CalcCore.get('mass');
+  const mm = CalcCore.get('molar_mass');
+  const v = CalcCore.get('volume');
+  const M = CalcCore.get('molarity');
+
+  let mass, molarMass, vol, molarity, moles;
+  const known = [!isNaN(m), !isNaN(mm), !isNaN(v), !isNaN(M)].filter(Boolean).length;
+  if (known < 3) return;
+
+  if (!isNaN(m) && !isNaN(mm) && !isNaN(v)) {
+    moles = m / mm; molarity = moles / v; mass = m; molarMass = mm; vol = v;
+  } else if (!isNaN(m) && !isNaN(mm) && !isNaN(M)) {
+    moles = m / mm; vol = moles / M; mass = m; molarMass = mm; molarity = M;
+  } else if (!isNaN(m) && !isNaN(v) && !isNaN(M)) {
+    moles = M * v; molarMass = m / moles; mass = m; vol = v; molarity = M; mm_calc = molarMass;
+  } else if (!isNaN(mm) && !isNaN(v) && !isNaN(M)) {
+    moles = M * v; mass = moles * mm; molarMass = mm; vol = v; molarity = M;
+  }
+
+  CalcCore.set('out-M', CalcCore.fmt(molarity || M, 4) + ' M');
+  CalcCore.set('out-moles', CalcCore.fmt(moles, 4) + ' mol');
+  CalcCore.set('out-mass', CalcCore.fmt(mass || m, 2) + ' g');
+  CalcCore.set('out-vol', CalcCore.fmt(vol || v, 4) + ' L');
+  CalcCore.showResult();
+  CalcCore.saveParams(['mass','molar_mass','volume','molarity']);
+}
+
+function clearAll() {
+  ["mass", "molar_mass", "volume", "molarity"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = el.defaultValue || '';
+  });
+  document.getElementById('result').classList.remove('visible');
+  history.replaceState(null, '', window.location.pathname);
+}
+
+document.addEventListener('DOMContentLoaded', () => { if (window.location.search) calculate(); });
+</script>
+</body>
+</html>

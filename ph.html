@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pH Calculator — ChemCalc</title>
+<meta name="description" content="pH calculator. Convert between pH, pOH, [H+], and [OH-]. Enter any one value to find the rest. Free chemistry tool.">
+<meta property="og:title" content="pH Calculator — ChemCalc">
+<meta property="og:description" content="pH calculator. Convert between pH, pOH, [H+], and [OH-]. Enter any one value to find the rest. Free chemistry tool.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://thehivemakes.github.io/hive-chem-calc/ph.html">
+<link rel="stylesheet" href="style.css">
+<script src="js/calc-core.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "pH Calculator",
+  "url": "https://thehivemakes.github.io/hive-chem-calc/ph.html",
+  "description": "pH calculator. Convert between pH, pOH, [H+], and [OH-]. Enter any one value to find the rest. Free chemistry tool.",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Any"
+}
+</script>
+</head>
+<body>
+<header><div class="header-inner"><div class="logo">Chem<span>Calc</span></div><div class="tagline">Free chemistry calculators</div></div></header>
+<nav><div class="nav-inner"><a href="index.html">ChemCalc</a><span class="sep">/</span><span>pH Calculator</span></div></nav>
+<main>
+  <div class="ad-leaderboard" id="ad-top">Ad</div>
+  <div class="card">
+    <h1>pH Calculator</h1>
+    <p class="subtitle">Enter pH, pOH, hydrogen ion concentration, or hydroxide concentration.</p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="ph_val">pH</label>
+        <input type="number" id="ph_val" step="0.01" placeholder="7.0">
+      </div>
+      <div class="field">
+        <label for="poh_val">pOH</label>
+        <input type="number" id="poh_val" step="0.01" placeholder="">
+      </div>
+      <div class="field">
+        <label for="h_conc">[H⁺] (mol/L)</label>
+        <input type="number" id="h_conc" step="any" placeholder="">
+      </div>
+      <div class="field">
+        <label for="oh_conc">[OH⁻] (mol/L)</label>
+        <input type="number" id="oh_conc" step="any" placeholder="">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+    <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+    <div class="result" id="result">
+      <div class="result-row">
+        <span class="result-label">pH</span>
+        <span class="result-value" id="out-ph">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">pOH</span>
+        <span class="result-value" id="out-poh">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">[H⁺] (mol/L)</span>
+        <span class="result-value" id="out-h">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">[OH⁻] (mol/L)</span>
+        <span class="result-value" id="out-oh">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Nature</span>
+        <span class="result-value" id="out-nature">—</span>
+      </div>
+      <div class="result-note">pH = −log₁₀[H⁺] | pOH = −log₁₀[OH⁻] | pH + pOH = 14 (at 25°C) | [H⁺][OH⁻] = 10⁻¹⁴</div>
+    </div>
+  </div>
+
+  <div class="ad-rectangle" id="ad-mid">Ad</div>
+  <div class="seo-section">
+    <h2>Understanding pH, pOH, and Ion Concentrations</h2>
+    <p>pH measures the acidity of a solution on a logarithmic scale from 0 to 14. A pH of 7 is neutral, below 7 is acidic, and above 7 is basic (alkaline).</p>
+    <p>The relationships are: pH = −log[H⁺], pOH = −log[OH⁻], and pH + pOH = 14 at 25°C. These hold for aqueous solutions at standard temperature.</p>
+  </div>
+</main>
+<footer>Free chemistry calculators. No signup, no tracking. Always double-check lab calculations before preparing solutions.<br>Built by <a href="https://thehivemakes.github.io/" style="color:var(--accent)">The Hive</a></footer>
+<script>
+
+function calculate() {
+  const ph = CalcCore.get('ph_val');
+  const poh = CalcCore.get('poh_val');
+  const h = CalcCore.get('h_conc');
+  const oh = CalcCore.get('oh_conc');
+
+  let pH, pOH, H, OH;
+  if (!isNaN(ph)) { pH=ph; pOH=14-ph; H=Math.pow(10,-ph); OH=Math.pow(10,-pOH); }
+  else if (!isNaN(poh)) { pOH=poh; pH=14-poh; H=Math.pow(10,-pH); OH=Math.pow(10,-pOH); }
+  else if (!isNaN(h)&&h>0) { pH=-Math.log10(h); pOH=14-pH; H=h; OH=1e-14/h; }
+  else if (!isNaN(oh)&&oh>0) { pOH=-Math.log10(oh); pH=14-pOH; H=1e-14/oh; OH=oh; }
+  else return;
+
+  const nature = pH < 6.95 ? 'Acidic' : pH > 7.05 ? 'Basic (alkaline)' : 'Neutral';
+  CalcCore.set('out-ph', CalcCore.fmt(pH, 2));
+  CalcCore.set('out-poh', CalcCore.fmt(pOH, 2));
+  CalcCore.set('out-h', H.toExponential(3) + ' M');
+  CalcCore.set('out-oh', OH.toExponential(3) + ' M');
+  CalcCore.set('out-nature', nature);
+  CalcCore.showResult();
+  CalcCore.saveParams(['ph_val','poh_val','h_conc','oh_conc']);
+}
+
+function clearAll() {
+  ["ph_val", "poh_val", "h_conc", "oh_conc"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = el.defaultValue || '';
+  });
+  document.getElementById('result').classList.remove('visible');
+  history.replaceState(null, '', window.location.pathname);
+}
+
+document.addEventListener('DOMContentLoaded', () => { if (window.location.search) calculate(); });
+</script>
+</body>
+</html>

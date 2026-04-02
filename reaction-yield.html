@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reaction Yield Calculator — ChemCalc</title>
+<meta name="description" content="Reaction yield calculator. Find theoretical yield, percent yield, and atom economy. Free chemistry lab tool.">
+<meta property="og:title" content="Reaction Yield Calculator — ChemCalc">
+<meta property="og:description" content="Reaction yield calculator. Find theoretical yield, percent yield, and atom economy. Free chemistry lab tool.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://thehivemakes.github.io/hive-chem-calc/reaction-yield.html">
+<link rel="stylesheet" href="style.css">
+<script src="js/calc-core.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Reaction Yield Calculator",
+  "url": "https://thehivemakes.github.io/hive-chem-calc/reaction-yield.html",
+  "description": "Reaction yield calculator. Find theoretical yield, percent yield, and atom economy. Free chemistry lab tool.",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "Any"
+}
+</script>
+</head>
+<body>
+<header><div class="header-inner"><div class="logo">Chem<span>Calc</span></div><div class="tagline">Free chemistry calculators</div></div></header>
+<nav><div class="nav-inner"><a href="index.html">ChemCalc</a><span class="sep">/</span><span>Reaction Yield Calculator</span></div></nav>
+<main>
+  <div class="ad-leaderboard" id="ad-top">Ad</div>
+  <div class="card">
+    <h1>Reaction Yield Calculator</h1>
+    <p class="subtitle">Enter reactant and product information to find theoretical and percent yield.</p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="reactant_mass">Reactant mass (g)</label>
+        <input type="number" id="reactant_mass" step="0.01" placeholder="10.0">
+      </div>
+      <div class="field">
+        <label for="reactant_mm">Reactant molar mass (g/mol)</label>
+        <input type="number" id="reactant_mm" step="0.01" placeholder="58.44">
+      </div>
+      <div class="field">
+        <label for="product_mm">Product molar mass (g/mol)</label>
+        <input type="number" id="product_mm" step="0.01" placeholder="40.00">
+      </div>
+      <div class="field">
+        <label for="stoich_ratio">Mole ratio (product:reactant)</label>
+        <input type="number" id="stoich_ratio" step="0.1" placeholder="1" value="1">
+      </div>
+      <div class="field">
+        <label for="actual_yield">Actual yield (g) — if known</label>
+        <input type="number" id="actual_yield" step="0.01" placeholder="">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+    <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+    <div class="result" id="result">
+      <div class="result-row">
+        <span class="result-label">Moles of reactant</span>
+        <span class="result-value" id="ry-moles-r">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Moles of product (theoretical)</span>
+        <span class="result-value" id="ry-moles-p">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Theoretical yield</span>
+        <span class="result-value" id="ry-theo">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Percent yield</span>
+        <span class="result-value" id="ry-pct">—</span>
+      </div>
+      <div class="result-note">Theoretical yield = (reactant mass / reactant MM) × ratio × product MM. Percent yield = (actual / theoretical) × 100%.</div>
+    </div>
+  </div>
+
+  <div class="ad-rectangle" id="ad-mid">Ad</div>
+  <div class="seo-section">
+    <h2>How to Calculate Reaction Yield</h2>
+    <p>Theoretical yield is the maximum amount of product that could be formed from a given amount of reactant, assuming 100% conversion. It is calculated from stoichiometry.</p>
+    <p>Percent yield compares actual yield to theoretical yield: % yield = (actual / theoretical) × 100. Yields above 100% indicate impurities or measurement error. Typical lab yields range from 40–90% depending on the reaction.</p>
+  </div>
+</main>
+<footer>Free chemistry calculators. No signup, no tracking. Always double-check lab calculations before preparing solutions.<br>Built by <a href="https://thehivemakes.github.io/" style="color:var(--accent)">The Hive</a></footer>
+<script>
+
+function calculate() {
+  const rm = CalcCore.get('reactant_mass');
+  const rmm = CalcCore.get('reactant_mm');
+  const pmm = CalcCore.get('product_mm');
+  const ratio = CalcCore.get('stoich_ratio') || 1;
+  const actual = CalcCore.get('actual_yield');
+  if (isNaN(rm)||isNaN(rmm)||isNaN(pmm)||rm<=0||rmm<=0||pmm<=0) return;
+
+  const molesR = rm / rmm;
+  const molesP = molesR * ratio;
+  const theoYield = molesP * pmm;
+
+  CalcCore.set('ry-moles-r', CalcCore.fmt(molesR, 4) + ' mol');
+  CalcCore.set('ry-moles-p', CalcCore.fmt(molesP, 4) + ' mol');
+  CalcCore.set('ry-theo', CalcCore.fmt(theoYield, 2) + ' g');
+  if (!isNaN(actual) && actual > 0) {
+    CalcCore.set('ry-pct', CalcCore.fmt((actual/theoYield)*100, 1) + '%');
+  } else {
+    CalcCore.set('ry-pct', 'Enter actual yield above');
+  }
+  CalcCore.showResult();
+  CalcCore.saveParams(['reactant_mass','reactant_mm','product_mm','stoich_ratio','actual_yield']);
+}
+
+function clearAll() {
+  ["reactant_mass", "reactant_mm", "product_mm", "stoich_ratio", "actual_yield"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = el.defaultValue || '';
+  });
+  document.getElementById('result').classList.remove('visible');
+  history.replaceState(null, '', window.location.pathname);
+}
+
+document.addEventListener('DOMContentLoaded', () => { if (window.location.search) calculate(); });
+</script>
+</body>
+</html>
