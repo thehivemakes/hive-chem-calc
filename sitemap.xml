@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://thehivemakes.github.io/hive-chem-calc/</loc><priority>1.0</priority></url>
-  <url><loc>https://thehivemakes.github.io/hive-chem-calc/molarity.html</loc><priority>0.8</priority></url>
-  <url><loc>https://thehivemakes.github.io/hive-chem-calc/dilution.html</loc><priority>0.8</priority></url>
-  <url><loc>https://thehivemakes.github.io/hive-chem-calc/ph.html</loc><priority>0.8</priority></url>
-  <url><loc>https://thehivemakes.github.io/hive-chem-calc/stoichiometry.html</loc><priority>0.8</priority></url>
-  <url><loc>https://thehivemakes.github.io/hive-chem-calc/reaction-yield.html</loc><priority>0.8</priority></url>
+  <url><loc>https://chem.thehivemakes.com/</loc><priority>1.0</priority></url>
+  <url><loc>https://chem.thehivemakes.com/molarity.html</loc><priority>0.8</priority></url>
+  <url><loc>https://chem.thehivemakes.com/dilution.html</loc><priority>0.8</priority></url>
+  <url><loc>https://chem.thehivemakes.com/ph.html</loc><priority>0.8</priority></url>
+  <url><loc>https://chem.thehivemakes.com/stoichiometry.html</loc><priority>0.8</priority></url>
+  <url><loc>https://chem.thehivemakes.com/reaction-yield.html</loc><priority>0.8</priority></url>
 </urlset>
